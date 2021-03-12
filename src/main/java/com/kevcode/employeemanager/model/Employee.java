@@ -1,8 +1,15 @@
 package com.kevcode.employeemanager.model;
 
+
+import com.sun.istack.NotNull;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicLong;
+
 @Entity
+//@Table(uniqueConstraints={@UniqueConstraint(columnNames = {"employeeCode" })})
+@SequenceGenerator(name="seq", initialValue=1, allocationSize=100)
 public class Employee implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,12 +20,12 @@ public class Employee implements Serializable {
     private String jobTitle;
     private String phone;
     private String imageUrl;
-    @Column(nullable = false, updatable = false)
-    private String employeeCode;
+    @Column( unique = true,nullable = false, updatable = false)
+    private Long employeeCode;
 
     public Employee(){}
 
-    public Employee(String name, String email, String jobTitle, String phone, String imageUrl, String employeeCode) {
+    public Employee(String name, String email, String jobTitle, String phone, String imageUrl, Long employeeCode) {
         this.name = name;
         this.email = email;
         this.jobTitle = jobTitle;
@@ -75,11 +82,11 @@ public class Employee implements Serializable {
         this.imageUrl = imageUrl;
     }
 
-    public String getEmployeeCode(String s) {
+    public Long getEmployeeCode(String s) {
         return employeeCode;
     }
 
-    public void setEmployeeCode(String employeeCode) {
+    public void setEmployeeCode(Long employeeCode) {
         this.employeeCode = employeeCode;
     }
 
@@ -94,5 +101,11 @@ public class Employee implements Serializable {
                 ", imageUrl='" + imageUrl + '\'' +
                 ", employeeCode='" + employeeCode + '\'' +
                 '}';
+    }
+    private final static AtomicLong subIdCounter = new AtomicLong(System.nanoTime());
+
+    @PrePersist
+    void sub_id() {
+        this.employeeCode = subIdCounter.incrementAndGet();
     }
 }
