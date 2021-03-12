@@ -20,7 +20,7 @@ public class EmployeeService {
     }
 
     public Employee addEmployee(Employee employee){
-        employee.getEmployeeCode(UUID.randomUUID().toString());
+      //  employee.getEmployeeCode(UUID.randomUUID().toString());
         return employeeRepo.save(employee);
     }
 
